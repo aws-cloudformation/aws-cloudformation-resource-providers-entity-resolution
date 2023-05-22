@@ -1,6 +1,6 @@
 ## aws-cloudformation-resource-providers-idres
 
-The CloudFormation Resource Provider Package For AWS Id Resolution
+The CloudFormation Resource Provider Package For AWS Entity Resolution
 
 ## Security
 
