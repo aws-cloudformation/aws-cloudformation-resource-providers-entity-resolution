@@ -1,0 +1,36 @@
+{
+  "CreateInputs": {
+    "Description": "This is description",
+    "MappedInputFields": [
+      {
+        "FieldName": "fieldName",
+        "GroupName": "groupName",
+        "MatchKey": "name",
+        "Type": "UNIQUE_ID"
+      },
+      {
+        "FieldName": "fieldAddress",
+        "GroupName": "groupAddress",
+        "MatchKey": "address",
+        "Type": "ADDRESS"
+      }
+    ],
+    "SchemaName": "ContractTestSchema",
+    "Tags": [
+      {
+        "Key": "key",
+        "Value": "value"
+      }
+    ]
+  },
+  "PatchInputs": [
+    {
+      "op": "replace",
+      "path": "/Tags/0/Value",
+      "value": "newValue"
+    }
+  ],
+  "ListInputs": {
+    "SchemaName": "ContractTestSchema"
+  }
+}
