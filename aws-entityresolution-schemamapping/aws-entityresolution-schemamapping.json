@@ -69,6 +69,10 @@
           "$ref": "#/definitions/AttributeName"
         }
       },
+      "required": [
+        "FieldName",
+        "Type"
+      ],
       "additionalProperties": false
     },
     "SchemaMappingArn": {
