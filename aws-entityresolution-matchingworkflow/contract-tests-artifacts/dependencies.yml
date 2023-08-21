@@ -1,0 +1,168 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Dependencies for MatchingWorkflow contract tests
+
+Parameters:
+  GlueDBName:
+    Type: String
+    Default: matching-workflow-test-db
+  GlueTableName:
+    Type: String
+    Default: matching-workflow-test-table
+
+Resources:
+  StackRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - cloudformation.amazonaws.com
+                - entityresolution.aws.internal
+                - entityresolution.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: StackRolePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - glue:GetDatabase
+                  - glue:GetPartition
+                  - glue:GetPartitions
+                  - glue:GetSchema
+                  - glue:GetSchemaVersion
+                  - glue:GetTable
+                  - glue:GetTables
+                  - glue:CreateTable
+                  - glue:DeleteTable
+                  - glue:CreateDatabase
+                  - glue:DeleteDatabase
+                  - s3:CreateBucket
+                  - s3:PutObject
+                  - s3:ListBucket
+                  - s3:GetBucketLocation
+                Resource: "*"
+  S3InputBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName:
+        Fn::Join:
+          - ""
+          - - "entityresolution-mw-contracttestbucket-input"
+            - !Ref AWS::AccountId
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+  GlueDB:
+    Type: 'AWS::Glue::Database'
+    DependsOn: S3InputBucket
+    Properties:
+      DatabaseInput:
+        Description: 'Cloudformation Contract Test DB'
+        Name: !Ref GlueDBName
+      CatalogId: !Ref AWS::AccountId
+  GlueTable:
+    Type: 'AWS::Glue::Table'
+    DependsOn: GlueDB
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: !Ref GlueDBName
+      TableInput:
+        Name: !Ref GlueTableName
+        StorageDescriptor:
+          Location:
+            Fn::Join:
+              - ""
+              - - s3://
+                - Ref: S3InputBucket
+                - "/"
+          Columns:
+            - Type: string
+              Name: name
+            - Type: string
+              Name: unique_id
+            - Type: string
+              Name: address
+  S3OutputBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName:
+        Fn::Join:
+          - ""
+          - - "entityresolution-ct-contracttestbucket-output"
+            - !Ref AWS::AccountId
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+  SchemaMapping:
+    Type: AWS::EntityResolution::SchemaMapping
+    Properties:
+      SchemaName: "ContractTestSchemaForWorkflow"
+      MappedInputFields:
+        - FieldName: "record"
+          Type: "UNIQUE_ID"
+        - FieldName: "name"
+          MatchKey: "name"
+          Type: "NAME"
+        - FieldName: "address"
+          MatchKey: "address"
+          Type: "ADDRESS"
+  ContractTestKey:
+    Type: AWS::KMS::Key
+    Properties:
+      KeyPolicy:
+        Id: "CfnEntityResolutionMatchingWorkflowKeyPolicy"
+        Version: "2012-10-17"
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS:
+                - !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:root
+            Action: "kms:*"
+            Resource: "*"
+          - Sid: Allow use of the key
+            Effect: Allow
+            Principal:
+              Service:
+                - cloudformation.amazonaws.com
+                - entityresolution.aws.internal
+                - entityresolution.amazonaws.com
+            Action:
+              - kms:CreateGrant
+              - kms:DescribeKey
+              - kms:GenerateDataKey
+              - kms:Encrypt
+              - kms:Decrypt
+            Resource: "*"
+
+Outputs:
+  GlueTable:
+    Value: !Join [":", ["arn:aws:glue", !Ref "AWS::Region", !Ref "AWS::AccountId", !Join ["/", ["table", !Ref GlueDBName, !Ref GlueTableName]]]]
+    Export:
+      Name: awsentityresolutionmatchingworkflowcto1
+  SchemaMapping:
+    Value: !GetAtt SchemaMapping.SchemaArn
+    Export:
+      Name: awsentityresolutionmatchingworkflowcto2
+  S3OutputBucket:
+    Value: !Join ["", ["s3://", !Ref S3OutputBucket, "/"]]
+    Export:
+      Name: awsentityresolutionmatchingworkflowcto3
+  StackRole:
+    Value: !GetAtt StackRole.Arn
+    Export:
+      Name: awsentityresolutionmatchingworkflowcto4
+  ContractTestKey:
+    Value: !GetAtt ContractTestKey.Arn
+    Export:
+      Name: awsentityresolutionmatchingworkflowcto5

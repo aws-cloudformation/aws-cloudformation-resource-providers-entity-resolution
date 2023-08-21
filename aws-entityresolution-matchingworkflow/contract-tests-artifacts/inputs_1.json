@@ -1,0 +1,78 @@
+{
+  "CreateInputs": {
+    "Description": "this is description",
+    "InputSourceConfig": [
+      {
+        "ApplyNormalization": true,
+        "InputSourceARN": "{{awsentityresolutionmatchingworkflowcto1}}",
+        "SchemaArn": "{{awsentityresolutionmatchingworkflowcto2}}"
+      }
+    ],
+    "OutputSourceConfig": [
+      {
+        "ApplyNormalization": true,
+        "KMSArn": "{{awsentityresolutionmatchingworkflowcto5}}",
+        "Output": [
+          {
+            "Hashed": true,
+            "Name": "name"
+          },
+          {
+            "Hashed": true,
+            "Name": "address"
+          }
+        ],
+        "OutputS3Path": "{{awsentityresolutionmatchingworkflowcto3}}"
+      }
+    ],
+    "ResolutionTechniques": {
+      "ResolutionType": "RULE_MATCHING",
+      "RuleBasedProperties": {
+        "AttributeMatchingModel": "ONE_TO_ONE",
+        "Rules": [
+          {
+            "MatchingKeys": [
+              "name",
+              "address"
+            ],
+            "RuleName": "rule1"
+          },
+          {
+            "MatchingKeys": [
+              "address"
+            ],
+            "RuleName": "rule2"
+          }
+        ]
+      }
+    },
+    "RoleArn": "{{awsentityresolutionmatchingworkflowcto4}}",
+    "Tags": [
+      {
+        "Key": "key",
+        "Value": "value"
+      }
+    ],
+    "WorkflowName": "ContractTestWorkflow"
+  },
+  "PatchInputs": [
+    {
+      "op": "replace",
+      "path": "/Tags/0/Value",
+      "value": "newValue"
+    },
+    {
+      "op": "replace",
+      "path": "/Description",
+      "value": "this is new description"
+    },
+    {
+      "op": "replace",
+      "path": "/InputSourceConfig/0/ApplyNormalization",
+      "value": false
+    }
+  ],
+  "ListInputs": {
+    "WorkflowName": "ContractTestWorkflow"
+  }
+}
