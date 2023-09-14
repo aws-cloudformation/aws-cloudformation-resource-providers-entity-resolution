@@ -68,6 +68,7 @@ public class UpdateHandlerTest {
     private static final String NAME = "name";
     private static final String OUTPUT_S3_PATH = "s3://test-bucket/";
     private static final String RESOLUTION_TYPE = "RULE_MATCHING";
+    private static final String ML_RESOLUTION_TYPE = "ML_MATCHING";
     private static final String ATTRIBUTE_MATCHING_MODEL = "ONE_TO_ONE";
     private static final List<String> MATCHING_KEYS = Arrays.asList("name", "address");
     private static final String RULE_NAME = "rule1";
@@ -131,8 +132,7 @@ public class UpdateHandlerTest {
 
         model = ResourceModel.builder()
                              .description(DESCRIPTION)
-                             .inputSourceConfig(
-                                 Translator.translateToCfnInputSourceConfig(inputSourceConfig, WORKFLOW_ARN))
+                             .inputSourceConfig(Translator.translateToCfnInputSourceConfig(inputSourceConfig, WORKFLOW_ARN))
                              .outputSourceConfig(Translator.translateToCfnOutputSourceConfig(outputSourceConfig))
                              .resolutionTechniques(Translator.translateToCfnResolutionTechniques(resolutionTechniques))
                              .roleArn(ROLE_ARN)
@@ -588,18 +588,8 @@ public class UpdateHandlerTest {
                                                                                 .outputS3Path(OUTPUT_S3_PATH)
                                                                                 .build());
 
-        final List<Rule> rules = Arrays.asList(Rule.builder()
-                                                   .matchingKeys(MATCHING_KEYS)
-                                                   .ruleName(RULE_NAME)
-                                                   .build());
-        final RuleBasedProperties ruleBasedProperties = RuleBasedProperties.builder()
-                                                                           .attributeMatchingModel(
-                                                                               ATTRIBUTE_MATCHING_MODEL)
-                                                                           .rules(rules)
-                                                                           .build();
         final ResolutionTechniques resolutionTechniques = ResolutionTechniques.builder()
-                                                                              .resolutionType(RESOLUTION_TYPE)
-                                                                              .ruleBasedProperties(ruleBasedProperties)
+                                                                              .resolutionType(ML_RESOLUTION_TYPE)
                                                                               .build();
 
         return UpdateMatchingWorkflowResponse.builder()
