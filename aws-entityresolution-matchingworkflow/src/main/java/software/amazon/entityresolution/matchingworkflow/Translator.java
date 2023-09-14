@@ -120,6 +120,13 @@ public class Translator {
             return null;
         }
 
+        if (source.getResolutionType()
+                  .equals("ML_MATCHING")) {
+            return ResolutionTechniques.builder()
+                                       .resolutionType(source.getResolutionType())
+                                       .build();
+        }
+
         return ResolutionTechniques.builder()
                                    .resolutionType(source.getResolutionType())
                                    .ruleBasedProperties(RuleBasedProperties.builder()
@@ -145,6 +152,14 @@ public class Translator {
         ResolutionTechniques source) {
         if (source == null) {
             return null;
+        }
+
+        if (source.resolutionTypeAsString()
+                  .equals("ML_MATCHING")) {
+            return software.amazon.entityresolution.matchingworkflow.ResolutionTechniques.builder()
+                                                                                         .resolutionType(
+                                                                                             source.resolutionTypeAsString())
+                                                                                         .build();
         }
 
         return software.amazon.entityresolution.matchingworkflow.ResolutionTechniques.builder()
