@@ -28,6 +28,8 @@ public class Translator {
                                                                           schemaInputAttribute.getFieldName())
                                                                       .type(
                                                                           schemaInputAttribute.getType())
+                                                                      .subType(
+                                                                          schemaInputAttribute.getSubType())
                                                                       .groupName(
                                                                           schemaInputAttribute.getGroupName())
                                                                       .matchKey(
@@ -51,6 +53,8 @@ public class Translator {
                                                                                                                     .type(
                                                                                                                         String.valueOf(
                                                                                                                             schemaInputAttribute.type()))
+                                                                                                                    .subType(
+                                                                                                                        schemaInputAttribute.subType())
                                                                                                                     .groupName(
                                                                                                                         schemaInputAttribute.groupName())
                                                                                                                     .matchKey(

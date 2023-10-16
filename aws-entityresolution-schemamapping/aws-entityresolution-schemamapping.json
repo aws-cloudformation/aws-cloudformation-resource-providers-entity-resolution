@@ -41,7 +41,8 @@
         "EMAIL_ADDRESS",
         "UNIQUE_ID",
         "DATE",
-        "STRING"
+        "STRING",
+        "PROVIDER_ID"
       ]
     },
     "MappedInputFields": {
@@ -61,6 +62,10 @@
         },
         "Type": {
           "$ref": "#/definitions/SchemaAttributeType"
+        },
+        "SubType": {
+          "type": "string",
+          "description": "The subtype of the Attribute. Would be required only when type is PROVIDER_ID"
         },
         "GroupName": {
           "$ref": "#/definitions/AttributeName"

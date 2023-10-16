@@ -1,13 +1,18 @@
 package software.amazon.entityresolution.matchingworkflow;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
+import software.amazon.awssdk.core.document.Document;
 import software.amazon.awssdk.services.entityresolution.model.InputSource;
+import software.amazon.awssdk.services.entityresolution.model.IntermediateSourceConfiguration;
 import software.amazon.awssdk.services.entityresolution.model.OutputAttribute;
 import software.amazon.awssdk.services.entityresolution.model.OutputSource;
+import software.amazon.awssdk.services.entityresolution.model.ProviderProperties;
 import software.amazon.awssdk.services.entityresolution.model.ResolutionTechniques;
 import software.amazon.awssdk.services.entityresolution.model.Rule;
 import software.amazon.awssdk.services.entityresolution.model.RuleBasedProperties;
@@ -18,7 +23,6 @@ import software.amazon.cloudformation.proxy.ResourceHandlerRequest;
  * This class is a centralized placeholder for - api request construction - object translation to/from aws sdk -
  * resource model construction for read/list handlers
  */
-
 public class Translator {
 
     public static String WORKFLOW_ARN_FORMAT = "arn:%s:entityresolution:%s:%s:matchingworkflow/%s";
@@ -125,6 +129,31 @@ public class Translator {
             return ResolutionTechniques.builder()
                                        .resolutionType(source.getResolutionType())
                                        .build();
+        } else if(source.getResolutionType().equals("PROVIDER")) {
+
+            ProviderProperties.Builder providerPropertiesBuilder = ProviderProperties.builder()
+                                                                                     .providerServiceArn(source.getProviderProperties().getProviderServiceArn());
+
+            if (source.getProviderProperties().getProviderConfiguration() != null) {
+                Map<String, Document> providerConfiguration = source.getProviderProperties().getProviderConfiguration()
+                                                                    .entrySet()
+                                                                    .stream()
+                                                                    .collect(Collectors.toMap(Map.Entry::getKey, entry -> Document.fromString(entry.getValue())));
+
+                providerPropertiesBuilder.providerConfiguration(Document.fromMap(providerConfiguration));
+            }
+
+            if(source.getProviderProperties().getIntermediateSourceConfiguration() != null) {
+                IntermediateSourceConfiguration intermediateSourceConfiguration = IntermediateSourceConfiguration.builder()
+                                                                                                                 .intermediateS3Path(source.getProviderProperties().getIntermediateSourceConfiguration().getIntermediateS3Path())
+                                                                                                                 .build();
+                providerPropertiesBuilder.intermediateSourceConfiguration(intermediateSourceConfiguration);
+            }
+
+            return ResolutionTechniques.builder()
+                                       .resolutionType(source.getResolutionType())
+                                       .providerProperties(providerPropertiesBuilder.build())
+                                       .build();
         }
 
         return ResolutionTechniques.builder()
@@ -159,6 +188,32 @@ public class Translator {
             return software.amazon.entityresolution.matchingworkflow.ResolutionTechniques.builder()
                                                                                          .resolutionType(
                                                                                              source.resolutionTypeAsString())
+                                                                                         .build();
+        } else if (source.resolutionTypeAsString().equals("PROVIDER")) {
+
+            software.amazon.entityresolution.matchingworkflow.ProviderProperties.ProviderPropertiesBuilder providerPropertiesBuilder =
+                software.amazon.entityresolution.matchingworkflow.ProviderProperties.builder()
+                                                                                    .providerServiceArn(source.providerProperties().providerServiceArn());
+
+            if (source.providerProperties().providerConfiguration() != null) {
+                Map<String, String> providerConfiguration = new HashMap<>();
+                for (Map.Entry<String, Document> entry: source.providerProperties().providerConfiguration().asMap().entrySet()) {
+                    providerConfiguration.put(entry.getKey(), entry.getValue().asString());
+                }
+
+                providerPropertiesBuilder.providerConfiguration(providerConfiguration);
+            }
+
+            if(source.providerProperties().intermediateSourceConfiguration() != null) {
+                software.amazon.entityresolution.matchingworkflow.IntermediateSourceConfiguration intermediateSourceConfiguration = software.amazon.entityresolution.matchingworkflow.IntermediateSourceConfiguration.builder()
+                                                                                                                                                                                                                     .intermediateS3Path(source.providerProperties().intermediateSourceConfiguration().intermediateS3Path())
+                                                                                                                                                                                                                     .build();
+                providerPropertiesBuilder.intermediateSourceConfiguration(intermediateSourceConfiguration);
+            }
+
+            return software.amazon.entityresolution.matchingworkflow.ResolutionTechniques.builder()
+                                                                                         .resolutionType(source.resolutionTypeAsString())
+                                                                                         .providerProperties(providerPropertiesBuilder.build())
                                                                                          .build();
         }
 

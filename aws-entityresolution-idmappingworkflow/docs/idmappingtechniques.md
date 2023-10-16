@@ -1,4 +1,4 @@
-# AWS::EntityResolution::MatchingWorkflow ResolutionTechniques
+# AWS::EntityResolution::IdMappingWorkflow IdMappingTechniques
 
 ## Syntax
 
@@ -8,8 +8,7 @@ To declare this entity in your AWS CloudFormation template, use the following sy
 
 <pre>
 {
-    "<a href="#resolutiontype" title="ResolutionType">ResolutionType</a>" : <i>String</i>,
-    "<a href="#rulebasedproperties" title="RuleBasedProperties">RuleBasedProperties</a>" : <i><a href="rulebasedproperties.md">RuleBasedProperties</a></i>,
+    "<a href="#idmappingtype" title="IdMappingType">IdMappingType</a>" : <i>String</i>,
     "<a href="#providerproperties" title="ProviderProperties">ProviderProperties</a>" : <i><a href="providerproperties.md">ProviderProperties</a></i>
 }
 </pre>
@@ -17,28 +16,19 @@ To declare this entity in your AWS CloudFormation template, use the following sy
 ### YAML
 
 <pre>
-<a href="#resolutiontype" title="ResolutionType">ResolutionType</a>: <i>String</i>
-<a href="#rulebasedproperties" title="RuleBasedProperties">RuleBasedProperties</a>: <i><a href="rulebasedproperties.md">RuleBasedProperties</a></i>
+<a href="#idmappingtype" title="IdMappingType">IdMappingType</a>: <i>String</i>
 <a href="#providerproperties" title="ProviderProperties">ProviderProperties</a>: <i><a href="providerproperties.md">ProviderProperties</a></i>
 </pre>
 
 ## Properties
 
-#### ResolutionType
+#### IdMappingType
 
 _Required_: No
 
 _Type_: String
 
-_Allowed Values_: <code>RULE_MATCHING</code> | <code>ML_MATCHING</code> | <code>PROVIDER</code>
-
-_Update requires_: [No interruption](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html#update-no-interrupt)
-
-#### RuleBasedProperties
-
-_Required_: No
-
-_Type_: <a href="rulebasedproperties.md">RuleBasedProperties</a>
+_Allowed Values_: <code>PROVIDER</code>
 
 _Update requires_: [No interruption](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html#update-no-interrupt)
 

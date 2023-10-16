@@ -1,13 +1,13 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Dependencies for MatchingWorkflow contract tests
+Description: Dependencies for IdMappingWorkflow contract tests
 
 Parameters:
   GlueDBName:
     Type: String
-    Default: matching-workflow-test-db
+    Default: idmapping-workflow-test-db
   GlueTableName:
     Type: String
-    Default: matching-workflow-test-table
+    Default: idmapping-workflow-test-table
 
 Resources:
   StackRole:
@@ -53,7 +53,7 @@ Resources:
       BucketName:
         Fn::Join:
           - ""
-          - - "entityresolution-mw-contracttestbucket-input"
+          - - "entityresolution-iw-contracttestbucket-input"
             - !Ref AWS::AccountId
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
@@ -89,38 +89,25 @@ Resources:
             - Type: string
               Name: unique_id
             - Type: string
-              Name: emailaddress
+              Name: address
   S3OutputBucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName:
         Fn::Join:
           - ""
-          - - "entityresolution-ct-contracttestbucket-output"
+          - - "entityresolution-ct-iw-contracttestbucket-output"
             - !Ref AWS::AccountId
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         BlockPublicPolicy: true
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
-  SchemaMapping:
-    Type: AWS::EntityResolution::SchemaMapping
-    Properties:
-      SchemaName: "ContractTestSchemaForMatchingWorkflow"
-      MappedInputFields:
-        - FieldName: "record"
-          Type: "UNIQUE_ID"
-        - FieldName: "name"
-          MatchKey: "name"
-          Type: "NAME"
-        - FieldName: "emailaddress"
-          MatchKey: "emailaddress"
-          Type: "EMAIL_ADDRESS"
   ContractTestKey:
     Type: AWS::KMS::Key
     Properties:
       KeyPolicy:
-        Id: "CfnEntityResolutionMatchingWorkflowKeyPolicy"
+        Id: "CfnEntityResolutionIdMappingWorkflowKeyPolicy"
         Version: "2012-10-17"
         Statement:
           - Sid: Enable IAM User Permissions
@@ -149,20 +136,20 @@ Outputs:
   GlueTable:
     Value: !Join [":", ["arn:aws:glue", !Ref "AWS::Region", !Ref "AWS::AccountId", !Join ["/", ["table", !Ref GlueDBName, !Ref GlueTableName]]]]
     Export:
-      Name: awsentityresolutionmatchingworkflowcto1
+      Name: awsentityresolutionidmappingworkflowcto1
   SchemaMapping:
-    Value: !GetAtt SchemaMapping.SchemaArn
+    Value: !Join [":", ["arn:aws:entityresolution", !Ref "AWS::Region", !Ref "AWS::AccountId", !Join ["/", ["schemamapping", "TestSchemaMappingForContractTest"]]]]
     Export:
-      Name: awsentityresolutionmatchingworkflowcto2
+      Name: awsentityresolutionidmappingworkflowcto2
   S3OutputBucket:
     Value: !Join ["", ["s3://", !Ref S3OutputBucket, "/"]]
     Export:
-      Name: awsentityresolutionmatchingworkflowcto3
+      Name: awsentityresolutionidmappingworkflowcto3
   StackRole:
     Value: !GetAtt StackRole.Arn
     Export:
-      Name: awsentityresolutionmatchingworkflowcto4
+      Name: awsentityresolutionidmappingworkflowcto4
   ContractTestKey:
     Value: !GetAtt ContractTestKey.Arn
     Export:
-      Name: awsentityresolutionmatchingworkflowcto5
+      Name: awsentityresolutionidmappingworkflowcto5

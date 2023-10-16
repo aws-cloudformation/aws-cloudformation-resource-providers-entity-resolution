@@ -13,6 +13,13 @@
         "GroupName": "groupAddress",
         "MatchKey": "address",
         "Type": "ADDRESS"
+      },
+      {
+        "FieldName": "rampId",
+        "GroupName": "outputRampId",
+        "MatchKey": "RampId",
+        "Type": "PROVIDER_ID",
+        "SubType": "RAMP_ID"
       }
     ],
     "SchemaName": "ContractTestSchema",

@@ -1,0 +1,59 @@
+{
+  "CreateInputs": {
+    "Description": "this is description",
+    "InputSourceConfig": [
+      {
+        "InputSourceARN": "{{awsentityresolutionidmappingworkflowcto1}}",
+        "SchemaArn": "{{awsentityresolutionidmappingworkflowcto2}}"
+      }
+    ],
+    "OutputSourceConfig": [
+      {
+        "KMSArn": "{{awsentityresolutionidmappingworkflowcto5}}",
+        "OutputS3Path": "{{awsentityresolutionidmappingworkflowcto3}}"
+      }
+    ],
+    "IdMappingTechniques": {
+      "IdMappingType": "PROVIDER",
+      "ProviderProperties": {
+        "ProviderServiceArn": "arn:aws:entityresolution:us-east-2::providerservice/liveramp/idmapping",
+        "ProviderConfiguration": {
+          "client_id": "arn:aws:secretsmanager:us-west-2:123456789012:secret:liveramp_client_id",
+          "client_secret": "arn:aws:secretsmanager:us-west-2:123456789012:secret:liveramp_client_secret",
+          "target_domain": "MP01"
+        },
+        "IntermediateSourceConfiguration": {
+          "IntermediateS3Path": "{{awsentityresolutionidmappingworkflowcto3}}"
+        }
+      }
+    },
+    "RoleArn": "{{awsentityresolutionidmappingworkflowcto4}}",
+    "Tags": [
+      {
+        "Key": "key",
+        "Value": "value"
+      }
+    ],
+    "WorkflowName": "ContractTestIdMappingWorkflow1"
+  },
+  "PatchInputs": [
+    {
+      "op": "replace",
+      "path": "/Tags/0/Value",
+      "value": "newValue"
+    },
+    {
+      "op": "replace",
+      "path": "/Description",
+      "value": "this is new description"
+    },
+    {
+      "op": "replace",
+      "path": "/Tags/0/Key",
+      "value": "newKey"
+    }
+  ],
+  "ListInputs": {
+    "WorkflowName": "ContractTestIdMappingWorkflow1"
+  }
+}

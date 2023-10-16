@@ -5,9 +5,9 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>software.amazon.entityresolution.schemamapping</groupId>
-    <artifactId>aws-entityresolution-schemamapping-handler</artifactId>
-    <name>aws-entityresolution-schemamapping-handler</name>
+    <groupId>software.amazon.entityresolution.idmappingworkflow</groupId>
+    <artifactId>aws-entityresolution-idmappingworkflow-handler</artifactId>
+    <name>aws-entityresolution-idmappingworkflow-handler</name>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -25,7 +25,6 @@
             <artifactId>entityresolution</artifactId>
             <version>2.21.1</version>
         </dependency>
-
         <!-- https://mvnrepository.com/artifact/software.amazon.cloudformation/aws-cloudformation-rpdk-java-plugin -->
         <dependency>
             <groupId>software.amazon.cloudformation</groupId>
@@ -36,7 +35,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
+            <version>1.18.4</version>
             <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
@@ -210,7 +209,7 @@
                                         <limit>
                                             <counter>BRANCH</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.6</minimum>
+                                            <minimum>0.8</minimum>
                                         </limit>
                                         <limit>
                                             <counter>INSTRUCTION</counter>
@@ -229,7 +228,7 @@
             <resource>
                 <directory>${project.basedir}</directory>
                 <includes>
-                    <include>aws-entityresolution-schemamapping.json</include>
+                    <include>aws-entityresolution-idmappingworkflow.json</include>
                 </includes>
             </resource>
             <resource>

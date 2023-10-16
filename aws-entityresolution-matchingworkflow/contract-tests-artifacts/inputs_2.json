@@ -26,24 +26,16 @@
       }
     ],
     "ResolutionTechniques": {
-      "ResolutionType": "RULE_MATCHING",
-      "RuleBasedProperties": {
-        "AttributeMatchingModel": "ONE_TO_ONE",
-        "Rules": [
-          {
-            "MatchingKeys": [
-              "name",
-              "emailaddress"
-            ],
-            "RuleName": "rule1"
-          },
-          {
-            "MatchingKeys": [
-              "emailaddress"
-            ],
-            "RuleName": "rule2"
-          }
-        ]
+      "ResolutionType": "PROVIDER",
+      "ProviderProperties": {
+        "ProviderServiceArn": "arn:aws:entityresolution:us-east-2::providerservice/liveramp/assignment",
+        "ProviderConfiguration": {
+          "client_id": "arn:aws:secretsmanager:us-west-2:123456789012:secret:liveramp_client_id",
+          "client_secret": "arn:aws:secretsmanager:us-west-2:123456789012:secret:liveramp_client_secret"
+        },
+        "IntermediateSourceConfiguration": {
+          "IntermediateS3Path": "{{awsentityresolutionmatchingworkflowcto3}}"
+        }
       }
     },
     "RoleArn": "{{awsentityresolutionmatchingworkflowcto4}}",
@@ -53,7 +45,7 @@
         "Value": "value"
       }
     ],
-    "WorkflowName": "ContractTestWorkflow"
+    "WorkflowName": "ContractTestWorkflow_2"
   },
   "PatchInputs": [
     {
@@ -70,16 +62,9 @@
       "op": "replace",
       "path": "/InputSourceConfig/0/ApplyNormalization",
       "value": false
-    },
-    {
-      "op": "replace",
-      "path": "/ResolutionTechniques",
-      "value": {
-        "ResolutionType": "ML_MATCHING"
-      }
     }
   ],
   "ListInputs": {
-    "WorkflowName": "ContractTestWorkflow"
+    "WorkflowName": "ContractTestWorkflow_2"
   }
 }
