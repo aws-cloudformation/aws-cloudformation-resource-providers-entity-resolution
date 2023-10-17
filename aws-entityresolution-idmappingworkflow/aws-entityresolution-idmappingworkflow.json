@@ -1,6 +1,6 @@
 {
-  "typeName": "AWS::EntityResolution::MatchingWorkflow",
-  "description": "MatchingWorkflow defined in AWS Entity Resolution service",
+  "typeName": "AWS::EntityResolution::IdMappingWorkflow",
+  "description": "IdMappingWorkflow defined in AWS Entity Resolution service",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-entity-resolution.git",
   "definitions": {
     "EntityName": {
@@ -29,20 +29,20 @@
       "type": "string",
       "pattern": "^arn:(aws|aws-us-gov|aws-cn):kms:.*:[0-9]+:.*$"
     },
-    "MatchingWorkflowArn": {
-      "description": "The default MatchingWorkflow arn",
+    "IdMappingWorkflowArn": {
+      "description": "The default IdMappingWorkflow arn",
       "type": "string",
-      "pattern": "^arn:(aws|aws-us-gov|aws-cn):entityresolution:.*:[0-9]+:(matchingworkflow/.*)$"
+      "pattern": "^arn:(aws|aws-us-gov|aws-cn):entityresolution:.*:[0-9]+:(idmappingworkflow/.*)$"
     },
     "CreatedAt": {
-      "description": "The time of this MatchingWorkflow got created",
+      "description": "The time of this IdMappingWorkflow got created",
       "type": "string"
     },
     "UpdatedAt": {
-      "description": "The time of this MatchingWorkflow got last updated at",
+      "description": "The time of this IdMappingWorkflow got last updated at",
       "type": "string"
     },
-    "InputSource": {
+    "IdMappingWorkflowInputSource": {
       "type": "object",
       "properties": {
         "InputSourceARN": {
@@ -53,9 +53,6 @@
         "SchemaArn": {
           "type": "string",
           "$ref": "#/definitions/SchemaMappingArn"
-        },
-        "ApplyNormalization": {
-          "type": "boolean"
         }
       },
       "required": [
@@ -64,7 +61,7 @@
       ],
       "additionalProperties": false
     },
-    "OutputSource": {
+    "IdMappingWorkflowOutputSource": {
       "type": "object",
       "properties": {
         "OutputS3Path": {
@@ -72,56 +69,23 @@
           "type": "string",
           "pattern": "^s3://([^/]+)/?(.*?([^/]+)/?)$"
         },
-        "Output": {
-          "type": "array",
-          "insertionOrder": false,
-          "minItems": 0,
-          "maxItems": 750,
-          "items": {
-            "$ref": "#/definitions/OutputAttribute"
-          }
-        },
         "KMSArn": {
           "$ref": "#/definitions/KMSArn"
-        },
-        "ApplyNormalization": {
-          "type": "boolean"
         }
       },
       "required": [
-        "Output",
         "OutputS3Path"
       ],
       "additionalProperties": false
     },
-    "OutputAttribute": {
+    "IdMappingTechniques": {
       "type": "object",
       "properties": {
-        "Name": {
-          "$ref": "#/definitions/AttributeName"
-        },
-        "Hashed": {
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "Name"
-      ],
-      "additionalProperties": false
-    },
-    "ResolutionTechniques": {
-      "type": "object",
-      "properties": {
-        "ResolutionType": {
+        "IdMappingType": {
           "type": "string",
           "enum": [
-            "RULE_MATCHING",
-            "ML_MATCHING",
             "PROVIDER"
           ]
-        },
-        "RuleBasedProperties": {
-          "$ref": "#/definitions/RuleBasedProperties"
         },
         "ProviderProperties": {
           "$ref": "#/definitions/ProviderProperties"
@@ -129,63 +93,13 @@
       },
       "additionalProperties": false
     },
-    "RuleBasedProperties": {
-      "type": "object",
-      "properties": {
-        "Rules": {
-          "type": "array",
-          "insertionOrder": false,
-          "minItems": 1,
-          "maxItems": 15,
-          "items": {
-            "$ref": "#/definitions/Rule"
-          }
-        },
-        "AttributeMatchingModel": {
-          "type": "string",
-          "enum": [
-            "ONE_TO_ONE",
-            "MANY_TO_MANY"
-          ]
-        }
-      },
-      "required": [
-        "AttributeMatchingModel",
-        "Rules"
-      ],
-      "additionalProperties": false
-    },
-    "Rule": {
-      "type": "object",
-      "properties": {
-        "RuleName": {
-          "type": "string",
-          "pattern": "^[a-zA-Z_0-9- \\t]*$",
-          "minLength": 0,
-          "maxLength": 255
-        },
-        "MatchingKeys": {
-          "type": "array",
-          "insertionOrder": false,
-          "minItems": 1,
-          "maxItems": 15,
-          "items": {
-            "$ref": "#/definitions/AttributeName"
-          }
-        }
-      },
-      "required": [
-        "RuleName",
-        "MatchingKeys"
-      ],
-      "additionalProperties": false
-    },
     "ProviderProperties": {
       "type": "object",
       "properties": {
         "ProviderServiceArn": {
           "type": "string",
-          "description": "Arn of the Provider service being used."
+          "description": "Arn of the Provider Service being used.",
+          "pattern": "^arn:(aws|aws-us-gov|aws-cn):entityresolution:([A-Za-z0-9]+(-[A-Za-z0-9]+)+)::providerservice/[A-Za-z0-9]+/[A-Za-z0-9]+$"
         },
         "ProviderConfiguration": {
           "type": "object",
@@ -245,11 +159,11 @@
   },
   "properties": {
     "WorkflowName": {
-      "description": "The name of the MatchingWorkflow",
+      "description": "The name of the IdMappingWorkflow",
       "$ref": "#/definitions/EntityName"
     },
     "Description": {
-      "description": "The description of the MatchingWorkflow",
+      "description": "The description of the IdMappingWorkflow",
       "$ref": "#/definitions/Description"
     },
     "InputSourceConfig": {
@@ -258,7 +172,7 @@
       "minItems": 1,
       "maxItems": 20,
       "items": {
-        "$ref": "#/definitions/InputSource"
+        "$ref": "#/definitions/IdMappingWorkflowInputSource"
       }
     },
     "OutputSourceConfig": {
@@ -267,11 +181,11 @@
       "minItems": 1,
       "maxItems": 1,
       "items": {
-        "$ref": "#/definitions/OutputSource"
+        "$ref": "#/definitions/IdMappingWorkflowOutputSource"
       }
     },
-    "ResolutionTechniques": {
-      "$ref": "#/definitions/ResolutionTechniques"
+    "IdMappingTechniques": {
+      "$ref": "#/definitions/IdMappingTechniques"
     },
     "RoleArn": {
       "type": "string",
@@ -288,7 +202,7 @@
       }
     },
     "WorkflowArn": {
-      "$ref": "#/definitions/MatchingWorkflowArn"
+      "$ref": "#/definitions/IdMappingWorkflowArn"
     },
     "CreatedAt": {
       "$ref": "#/definitions/CreatedAt"
@@ -318,36 +232,18 @@
   "handlers": {
     "create": {
       "permissions": [
-        "entityresolution:CreateMatchingWorkflow",
-        "entityresolution:GetMatchingWorkflow",
+        "entityresolution:CreateIdMappingWorkflow",
+        "entityresolution:GetIdMappingWorkflow",
         "entityresolution:TagResource",
         "kms:CreateGrant",
         "kms:DescribeKey",
         "iam:PassRole"
       ]
     },
-    "read": {
-      "permissions": [
-        "entityresolution:GetMatchingWorkflow",
-        "entityresolution:ListTagsForResource"
-      ]
-    },
-    "delete": {
-      "permissions": [
-        "entityresolution:DeleteMatchingWorkflow",
-        "entityresolution:GetMatchingWorkflow",
-        "entityresolution:UntagResource"
-      ]
-    },
-    "list": {
-      "permissions": [
-        "entityresolution:ListMatchingWorkflows"
-      ]
-    },
     "update": {
       "permissions": [
-        "entityresolution:GetMatchingWorkflow",
-        "entityresolution:UpdateMatchingWorkflow",
+        "entityresolution:GetIdMappingWorkflow",
+        "entityresolution:UpdateIdMappingWorkflow",
         "entityresolution:ListTagsForResource",
         "entityresolution:TagResource",
         "entityresolution:UntagResource",
@@ -355,13 +251,31 @@
         "kms:CreateGrant",
         "kms:DescribeKey"
       ]
+    },
+    "read": {
+      "permissions": [
+        "entityresolution:GetIdMappingWorkflow",
+        "entityresolution:ListTagsForResource"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "entityresolution:DeleteIdMappingWorkflow",
+        "entityresolution:GetIdMappingWorkflow",
+        "entityresolution:UntagResource"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "entityresolution:ListIdMappingWorkflows"
+      ]
     }
   },
   "required": [
     "WorkflowName",
     "InputSourceConfig",
     "OutputSourceConfig",
-    "ResolutionTechniques",
+    "IdMappingTechniques",
     "RoleArn"
   ],
   "additionalProperties": false

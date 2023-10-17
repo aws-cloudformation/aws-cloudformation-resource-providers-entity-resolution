@@ -112,6 +112,7 @@
     "ResolutionTechniques": {
       "type": "object",
       "properties": {
+        <% if ["us-east-1", "us-west-2", "us-east-2"].include?(@region.region_name) %>
         "ResolutionType": {
           "type": "string",
           "enum": [
@@ -126,7 +127,22 @@
         "ProviderProperties": {
           "$ref": "#/definitions/ProviderProperties"
         }
+        <% else %>
+        "ResolutionType": {
+          "type": "string",
+          "enum": [
+            "RULE_MATCHING",
+            "ML_MATCHING"
+          ]
+        },
+        "RuleBasedProperties": {
+          "$ref": "#/definitions/RuleBasedProperties"
+        }
+        <% end %>
       },
+      "required": [
+        "ResolutionType"
+      ],
       "additionalProperties": false
     },
     "RuleBasedProperties": {
@@ -180,6 +196,7 @@
       ],
       "additionalProperties": false
     },
+    <% if ["us-east-1", "us-west-2", "us-east-2"].include?(@region.region_name) %>
     "ProviderProperties": {
       "type": "object",
       "properties": {
@@ -188,7 +205,7 @@
           "description": "Arn of the Provider service being used."
         },
         "ProviderConfiguration": {
-          "type": "object",
+          "type" : "object",
           "additionalProperties": false,
           "patternProperties": {
             "^.+$": {
@@ -219,6 +236,7 @@
       ],
       "additionalProperties": false
     },
+    <% end %>
     "Tag": {
       "description": "A key-value pair to associate with a resource",
       "type": "object",
