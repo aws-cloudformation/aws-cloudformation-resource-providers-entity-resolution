@@ -73,6 +73,7 @@ public class ListHandler extends BaseHandler<CallbackContext> {
                                                                                  .schemaName(schema.schemaName())
                                                                                  .updatedAt(schema.updatedAt()
                                                                                                   .toString())
+                                                                                 .hasWorkflows(schema.hasWorkflows())
                                                                                  .build();
                                       responseModels.add(responseModel);
                                   });

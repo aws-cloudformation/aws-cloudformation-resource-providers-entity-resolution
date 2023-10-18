@@ -16,6 +16,7 @@ To declare this entity in your AWS CloudFormation template, use the following sy
         "<a href="#description" title="Description">Description</a>" : <i>String</i>,
         "<a href="#mappedinputfields" title="MappedInputFields">MappedInputFields</a>" : <i>[ <a href="schemainputattribute.md">SchemaInputAttribute</a>, ... ]</i>,
         "<a href="#tags" title="Tags">Tags</a>" : <i>[ <a href="tag.md">Tag</a>, ... ]</i>,
+        "<a href="#hasworkflows" title="HasWorkflows">HasWorkflows</a>" : <i>Boolean</i>
     }
 }
 </pre>
@@ -31,6 +32,7 @@ Properties:
       - <a href="schemainputattribute.md">SchemaInputAttribute</a></i>
     <a href="#tags" title="Tags">Tags</a>: <i>
       - <a href="tag.md">Tag</a></i>
+    <a href="#hasworkflows" title="HasWorkflows">HasWorkflows</a>: <i>Boolean</i>
 </pre>
 
 ## Properties
@@ -55,7 +57,7 @@ _Type_: String
 
 _Maximum Length_: <code>255</code>
 
-_Update requires_: [Replacement](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html#update-replacement)
+_Update requires_: [No interruption](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html#update-no-interrupt)
 
 #### MappedInputFields
 
@@ -63,13 +65,23 @@ _Required_: Yes
 
 _Type_: List of <a href="schemainputattribute.md">SchemaInputAttribute</a>
 
-_Update requires_: [Replacement](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html#update-replacement)
+_Update requires_: [No interruption](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html#update-no-interrupt)
 
 #### Tags
 
 _Required_: No
 
 _Type_: List of <a href="tag.md">Tag</a>
+
+_Update requires_: [No interruption](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html#update-no-interrupt)
+
+#### HasWorkflows
+
+The boolean value that indicates whether or not a SchemaMapping has MatchingWorkflows that are associated with
+
+_Required_: No
+
+_Type_: Boolean
 
 _Update requires_: [No interruption](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html#update-no-interrupt)
 

@@ -35,6 +35,21 @@
       "op": "replace",
       "path": "/Tags/0/Value",
       "value": "newValue"
+    },
+    {
+      "op": "replace",
+      "path": "/Description",
+      "value": "this is new description"
+    },
+    {
+      "op": "replace",
+      "path": "/MappedInputFields/1",
+      "value": {
+        "FieldName": "newFieldName",
+        "GroupName": "newGroupName",
+        "MatchKey": "phone",
+        "Type": "PHONE"
+      }
     }
   ],
   "ListInputs": {

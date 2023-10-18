@@ -37,6 +37,7 @@ Resources:
                 - "entityresolution:ListTagsForResource"
                 - "entityresolution:TagResource"
                 - "entityresolution:UntagResource"
+                - "entityresolution:UpdateSchemaMapping"
                 Resource: "*"
 Outputs:
   ExecutionRoleArn:

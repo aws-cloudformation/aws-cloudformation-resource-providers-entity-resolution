@@ -32,6 +32,8 @@ import software.amazon.awssdk.services.entityresolution.model.TagResourceRespons
 import software.amazon.awssdk.services.entityresolution.model.ThrottlingException;
 import software.amazon.awssdk.services.entityresolution.model.UntagResourceRequest;
 import software.amazon.awssdk.services.entityresolution.model.UntagResourceResponse;
+import software.amazon.awssdk.services.entityresolution.model.UpdateSchemaMappingRequest;
+import software.amazon.awssdk.services.entityresolution.model.UpdateSchemaMappingResponse;
 import software.amazon.awssdk.services.entityresolution.model.ValidationException;
 import software.amazon.cloudformation.exceptions.CfnAccessDeniedException;
 import software.amazon.cloudformation.exceptions.CfnGeneralServiceException;
@@ -54,6 +56,7 @@ public class UpdateHandlerTest {
     private static final String GROUP_NAME = "groupName";
     private static final String MATCH_KEY = "matchKey";
     private static final String TYPE = "type";
+    private static final boolean HAS_WORKFLOWS = false;
     private static final String SCHEMA_ARN = "arn:aws:entityresolution:us-east-1:123456789012:schemamapping"
         + "/schemaName";
     private static final Map<String, String> PREVIOUS_TAGS = ImmutableMap.of("key1", "value1");
@@ -98,12 +101,19 @@ public class UpdateHandlerTest {
                                                            .schemaArn(SCHEMA_ARN)
                                                            .schemaName(SCHEMA_NAME)
                                                            .updatedAt(TIME)
+                                                           .hasWorkflows(HAS_WORKFLOWS)
                                                            .build();
     }
 
     @Test
     public void handleRequest_SimpleSuccess() {
         final UpdateHandler handler = new UpdateHandler(client);
+
+        final UpdateSchemaMappingResponse updateSchemaMappingResponse = buildUpdateSchemaMappingResponse();
+
+        Mockito.doReturn(updateSchemaMappingResponse)
+               .when(proxy)
+               .injectCredentialsAndInvokeV2(any(UpdateSchemaMappingRequest.class), any());
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                                                                                     .desiredResourceState(model)
@@ -145,9 +155,14 @@ public class UpdateHandlerTest {
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isNotNull();
         assertThat(response.getResourceModel()
-                           .getSchemaArn()).isEqualTo(SCHEMA_ARN);
+                           .getSchemaArn()).isEqualTo(updateSchemaMappingResponse.schemaArn());
         assertThat(response.getResourceModel()
-                           .getSchemaName()).isEqualTo(SCHEMA_NAME);
+                           .getDescription()).isEqualTo(updateSchemaMappingResponse.description());
+        assertThat(response.getResourceModel()
+                           .getMappedInputFields()).isEqualTo(
+            Translator.translateToInternalSchemaInputAttributes(updateSchemaMappingResponse.mappedInputFields()));
+        assertThat(response.getResourceModel()
+                           .getSchemaName()).isEqualTo(updateSchemaMappingResponse.schemaName());
         assertThat(response.getResourceModel()
                            .getTags()).isEqualTo(Translator.mapTagsToSet(DESIRED_TAGS));
         assertThat(response.getResourceModels()).isNull();
@@ -158,6 +173,12 @@ public class UpdateHandlerTest {
     @Test
     public void handleRequest_withNullPreviousResourceTags() {
         final UpdateHandler handler = new UpdateHandler(client);
+
+        final UpdateSchemaMappingResponse updateSchemaMappingResponse = buildUpdateSchemaMappingResponse();
+
+        Mockito.doReturn(updateSchemaMappingResponse)
+               .when(proxy)
+               .injectCredentialsAndInvokeV2(any(UpdateSchemaMappingRequest.class), any());
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                                                                                     .desiredResourceState(model)
@@ -192,6 +213,15 @@ public class UpdateHandlerTest {
         assertThat(response.getCallbackContext()).isNull();
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()
+                           .getSchemaArn()).isEqualTo(updateSchemaMappingResponse.schemaArn());
+        assertThat(response.getResourceModel()
+                           .getDescription()).isEqualTo(updateSchemaMappingResponse.description());
+        assertThat(response.getResourceModel()
+                           .getMappedInputFields()).isEqualTo(
+            Translator.translateToInternalSchemaInputAttributes(updateSchemaMappingResponse.mappedInputFields()));
+        assertThat(response.getResourceModel()
+                           .getSchemaName()).isEqualTo(updateSchemaMappingResponse.schemaName());
+        assertThat(response.getResourceModel()
                            .getTags()).isEqualTo(Translator.mapTagsToSet(DESIRED_TAGS));
         assertThat(response.getResourceModels()).isNull();
         assertThat(response.getMessage()).isNull();
@@ -201,6 +231,12 @@ public class UpdateHandlerTest {
     @Test
     public void handleRequest_withEmptyPreviousResourceTags() {
         final UpdateHandler handler = new UpdateHandler(client);
+
+        final UpdateSchemaMappingResponse updateSchemaMappingResponse = buildUpdateSchemaMappingResponse();
+
+        Mockito.doReturn(updateSchemaMappingResponse)
+               .when(proxy)
+               .injectCredentialsAndInvokeV2(any(UpdateSchemaMappingRequest.class), any());
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                                                                                     .desiredResourceState(model)
@@ -237,6 +273,15 @@ public class UpdateHandlerTest {
         assertThat(response.getCallbackContext()).isNull();
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()
+                           .getSchemaArn()).isEqualTo(updateSchemaMappingResponse.schemaArn());
+        assertThat(response.getResourceModel()
+                           .getDescription()).isEqualTo(updateSchemaMappingResponse.description());
+        assertThat(response.getResourceModel()
+                           .getMappedInputFields()).isEqualTo(
+            Translator.translateToInternalSchemaInputAttributes(updateSchemaMappingResponse.mappedInputFields()));
+        assertThat(response.getResourceModel()
+                           .getSchemaName()).isEqualTo(updateSchemaMappingResponse.schemaName());
+        assertThat(response.getResourceModel()
                            .getTags()).isEqualTo(Translator.mapTagsToSet(DESIRED_TAGS));
         assertThat(response.getResourceModels()).isNull();
         assertThat(response.getMessage()).isNull();
@@ -246,6 +291,12 @@ public class UpdateHandlerTest {
     @Test
     public void handleRequest_withNullDesiredResourceTags() {
         final UpdateHandler handler = new UpdateHandler(client);
+
+        final UpdateSchemaMappingResponse updateSchemaMappingResponse = buildUpdateSchemaMappingResponse();
+
+        Mockito.doReturn(updateSchemaMappingResponse)
+               .when(proxy)
+               .injectCredentialsAndInvokeV2(any(UpdateSchemaMappingRequest.class), any());
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                                                                                     .desiredResourceState(model)
@@ -270,6 +321,7 @@ public class UpdateHandlerTest {
                                                                                           .schemaName(SCHEMA_NAME)
                                                                                           .tags(null)
                                                                                           .updatedAt(TIME)
+                                                                                          .hasWorkflows(HAS_WORKFLOWS)
                                                                                           .build();
         Mockito.doReturn(getSchemaMappingResponse)
                .when(proxy)
@@ -298,6 +350,15 @@ public class UpdateHandlerTest {
         assertThat(response.getCallbackContext()).isNull();
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()
+                           .getSchemaArn()).isEqualTo(updateSchemaMappingResponse.schemaArn());
+        assertThat(response.getResourceModel()
+                           .getDescription()).isEqualTo(updateSchemaMappingResponse.description());
+        assertThat(response.getResourceModel()
+                           .getMappedInputFields()).isEqualTo(
+            Translator.translateToInternalSchemaInputAttributes(updateSchemaMappingResponse.mappedInputFields()));
+        assertThat(response.getResourceModel()
+                           .getSchemaName()).isEqualTo(updateSchemaMappingResponse.schemaName());
+        assertThat(response.getResourceModel()
                            .getTags()).isNull();
         assertThat(response.getResourceModels()).isNull();
         assertThat(response.getMessage()).isNull();
@@ -307,6 +368,12 @@ public class UpdateHandlerTest {
     @Test
     public void handleRequest_withEmptyDesiredResourceTags() {
         final UpdateHandler handler = new UpdateHandler(client);
+
+        final UpdateSchemaMappingResponse updateSchemaMappingResponse = buildUpdateSchemaMappingResponse();
+
+        Mockito.doReturn(updateSchemaMappingResponse)
+               .when(proxy)
+               .injectCredentialsAndInvokeV2(any(UpdateSchemaMappingRequest.class), any());
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                                                                                     .desiredResourceState(model)
@@ -333,6 +400,7 @@ public class UpdateHandlerTest {
                                                                                           .schemaName(SCHEMA_NAME)
                                                                                           .tags(null)
                                                                                           .updatedAt(TIME)
+                                                                                          .hasWorkflows(HAS_WORKFLOWS)
                                                                                           .build();
         Mockito.doReturn(getSchemaMappingResponse)
                .when(proxy)
@@ -360,6 +428,15 @@ public class UpdateHandlerTest {
         assertThat(response.getStatus()).isEqualTo(OperationStatus.SUCCESS);
         assertThat(response.getCallbackContext()).isNull();
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
+        assertThat(response.getResourceModel()
+                           .getSchemaArn()).isEqualTo(updateSchemaMappingResponse.schemaArn());
+        assertThat(response.getResourceModel()
+                           .getDescription()).isEqualTo(updateSchemaMappingResponse.description());
+        assertThat(response.getResourceModel()
+                           .getMappedInputFields()).isEqualTo(
+            Translator.translateToInternalSchemaInputAttributes(updateSchemaMappingResponse.mappedInputFields()));
+        assertThat(response.getResourceModel()
+                           .getSchemaName()).isEqualTo(updateSchemaMappingResponse.schemaName());
         assertThat(response.getResourceModel()
                            .getTags()).isNull();
         assertThat(response.getResourceModels()).isNull();
@@ -455,5 +532,23 @@ public class UpdateHandlerTest {
 
         assertThrows(CfnGeneralServiceException.class,
             () -> handler.handleRequest(proxy, request, null, logger));
+    }
+
+    private UpdateSchemaMappingResponse buildUpdateSchemaMappingResponse() {
+        final SchemaInputAttribute testAttribute = SchemaInputAttribute.builder()
+                                                                       .fieldName(FIELD_NAME)
+                                                                       .groupName(GROUP_NAME)
+                                                                       .matchKey(MATCH_KEY)
+                                                                       .type(TYPE)
+                                                                       .build();
+
+        final List<SchemaInputAttribute> mappedInputFields = Arrays.asList(testAttribute);
+
+        return UpdateSchemaMappingResponse.builder()
+                                          .description(DESCRIPTION)
+                                          .mappedInputFields(mappedInputFields)
+                                          .schemaArn(SCHEMA_ARN)
+                                          .schemaName(SCHEMA_NAME)
+                                          .build();
     }
 }
