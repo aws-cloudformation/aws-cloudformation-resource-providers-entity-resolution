@@ -89,6 +89,7 @@ public class ReadHandler extends BaseHandler<CallbackContext> {
                                                              listTagsForResourceResponse.tags()))
                                                          .updatedAt(getSchemaMappingResponse.updatedAt()
                                                                                             .toString())
+                                                         .hasWorkflows(getSchemaMappingResponse.hasWorkflows())
                                                          .build();
 
         return ProgressEvent.defaultSuccessHandler(responseModel);

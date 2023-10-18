@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import software.amazon.awssdk.services.entityresolution.EntityResolutionClient;
 import software.amazon.awssdk.services.entityresolution.model.AccessDeniedException;
+import software.amazon.awssdk.services.entityresolution.model.ConflictException;
 import software.amazon.awssdk.services.entityresolution.model.DeleteSchemaMappingRequest;
 import software.amazon.awssdk.services.entityresolution.model.DeleteSchemaMappingResponse;
 import software.amazon.awssdk.services.entityresolution.model.GetSchemaMappingRequest;
@@ -22,6 +23,7 @@ import software.amazon.awssdk.services.entityresolution.model.ThrottlingExceptio
 import software.amazon.awssdk.services.entityresolution.model.ValidationException;
 import software.amazon.cloudformation.exceptions.CfnAccessDeniedException;
 import software.amazon.cloudformation.exceptions.CfnGeneralServiceException;
+import software.amazon.cloudformation.exceptions.CfnInternalFailureException;
 import software.amazon.cloudformation.exceptions.CfnInvalidRequestException;
 import software.amazon.cloudformation.exceptions.CfnNotFoundException;
 import software.amazon.cloudformation.exceptions.CfnServiceInternalErrorException;
@@ -84,6 +86,28 @@ public class DeleteHandlerTest {
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isNull();
         assertThat(response.getResourceModels()).isNull();
+    }
+
+    @Test
+    public void handleRequest_throwsConflictException() {
+        final DeleteHandler handler = new DeleteHandler(client);
+        ConflictException exception = ConflictException.builder()
+                                                       .build();
+
+        Mockito.doThrow(exception)
+               .when(proxy)
+               .injectCredentialsAndInvokeV2(any(DeleteSchemaMappingRequest.class), any());
+
+        Mockito.doReturn(null)
+               .when(proxy)
+               .injectCredentialsAndInvokeV2(any(GetSchemaMappingRequest.class), any());
+
+        final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
+                                                                                    .desiredResourceState(model)
+                                                                                    .build();
+
+        assertThrows(CfnInternalFailureException.class,
+            () -> handler.handleRequest(proxy, request, new CallbackContext(), logger));
     }
 
     @Test

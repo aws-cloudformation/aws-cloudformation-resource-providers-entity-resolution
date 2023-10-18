@@ -43,6 +43,7 @@ public class ListHandlerTest {
         + "/schemaName1";
     private static final String SCHEMA_ARN_2 = "arn:aws:entityresolution:us-east-1:123456789012:schemamapping"
         + "/schemaName2";
+    private static final boolean HAS_WORKFLOWS = false;
 
     @Mock
     private AmazonWebServicesClientProxy proxy;
@@ -73,6 +74,7 @@ public class ListHandlerTest {
                                                                             .schemaArn(SCHEMA_ARN_1)
                                                                             .createdAt(TIME)
                                                                             .updatedAt(TIME)
+                                                                            .hasWorkflows(HAS_WORKFLOWS)
                                                                             .build();
 
         final SchemaMappingSummary listSchemaMapping2 = SchemaMappingSummary.builder()
@@ -80,6 +82,7 @@ public class ListHandlerTest {
                                                                             .schemaArn(SCHEMA_ARN_2)
                                                                             .createdAt(TIME)
                                                                             .updatedAt(TIME)
+                                                                            .hasWorkflows(HAS_WORKFLOWS)
                                                                             .build();
 
         final ListSchemaMappingsResponse listSchemaMappingsResponse = ListSchemaMappingsResponse.builder()
@@ -118,6 +121,12 @@ public class ListHandlerTest {
         assertThat(response.getResourceModels()
                            .get(1)
                            .getSchemaArn()).isEqualTo(SCHEMA_ARN_2);
+        assertThat(response.getResourceModels()
+                           .get(0)
+                           .getHasWorkflows()).isEqualTo(HAS_WORKFLOWS);
+        assertThat(response.getResourceModels()
+                           .get(1)
+                           .getHasWorkflows()).isEqualTo(HAS_WORKFLOWS);
         assertThat(response.getMessage()).isNull();
         assertThat(response.getErrorCode()).isNull();
     }

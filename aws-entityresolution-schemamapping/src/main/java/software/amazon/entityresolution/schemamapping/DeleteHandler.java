@@ -3,6 +3,7 @@ package software.amazon.entityresolution.schemamapping;
 import lombok.NoArgsConstructor;
 import software.amazon.awssdk.services.entityresolution.EntityResolutionClient;
 import software.amazon.awssdk.services.entityresolution.model.AccessDeniedException;
+import software.amazon.awssdk.services.entityresolution.model.ConflictException;
 import software.amazon.awssdk.services.entityresolution.model.DeleteSchemaMappingRequest;
 import software.amazon.awssdk.services.entityresolution.model.GetSchemaMappingRequest;
 import software.amazon.awssdk.services.entityresolution.model.InternalServerException;
@@ -10,6 +11,7 @@ import software.amazon.awssdk.services.entityresolution.model.ResourceNotFoundEx
 import software.amazon.awssdk.services.entityresolution.model.ValidationException;
 import software.amazon.cloudformation.exceptions.CfnAccessDeniedException;
 import software.amazon.cloudformation.exceptions.CfnGeneralServiceException;
+import software.amazon.cloudformation.exceptions.CfnInternalFailureException;
 import software.amazon.cloudformation.exceptions.CfnInvalidRequestException;
 import software.amazon.cloudformation.exceptions.CfnNotFoundException;
 import software.amazon.cloudformation.exceptions.CfnServiceInternalErrorException;
@@ -52,6 +54,9 @@ public class DeleteHandler extends BaseHandler<CallbackContext> {
             proxy.injectCredentialsAndInvokeV2(deleteSchemaMappingRequest,
                 client::deleteSchemaMapping);
             logger.log(String.format("Deleted Schema Mapping with schemaName = %s", requestModel.getSchemaName()));
+        } catch (final ConflictException e) {
+            logger.log(String.format("Schema currently has Workflow(s) associated with it"));
+            throw new CfnInternalFailureException(e);
         } catch (final AccessDeniedException e) {
             throw new CfnAccessDeniedException(e);
         } catch (final ResourceNotFoundException e) {

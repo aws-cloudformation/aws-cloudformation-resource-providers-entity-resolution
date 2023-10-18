@@ -48,6 +48,7 @@ public class ReadHandlerTest {
     private static final String GROUP_NAME = "groupName";
     private static final String MATCH_KEY = "matchKey";
     private static final String TYPE = "type";
+    private static final boolean HAS_WORKFLOWS = false;
     private static final String SCHEMA_ARN = "arn:aws:entityresolution:us-east-1:123456789012:schemamapping"
         + "/schemaName";
     private static final Map<String, String> DESIRED_TAGS = ImmutableMap.of("key1", "value1");
@@ -100,6 +101,7 @@ public class ReadHandlerTest {
                                                                                           .schemaArn(SCHEMA_ARN)
                                                                                           .schemaName(SCHEMA_NAME)
                                                                                           .updatedAt(TIME)
+                                                                                          .hasWorkflows(HAS_WORKFLOWS)
                                                                                           .build();
         final ListTagsForResourceResponse listTagsForResourceResponse = ListTagsForResourceResponse.builder()
                                                                                                    .tags(DESIRED_TAGS)
@@ -134,6 +136,8 @@ public class ReadHandlerTest {
                            .getSchemaArn()).isEqualTo(SCHEMA_ARN);
         assertThat(response.getResourceModel()
                            .getSchemaName()).isEqualTo(SCHEMA_NAME);
+        assertThat(response.getResourceModel()
+                           .getHasWorkflows()).isEqualTo(HAS_WORKFLOWS);
         assertThat(response.getResourceModel()
                            .getTags()).isEqualTo(Translator.mapTagsToSet(DESIRED_TAGS));
 
