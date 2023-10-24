@@ -163,7 +163,8 @@
   "readOnlyProperties": [
     "/properties/SchemaArn",
     "/properties/CreatedAt",
-    "/properties/UpdatedAt"
+    "/properties/UpdatedAt",
+    "/properties/HasWorkflows"
   ],
   "primaryIdentifier": [
     "/properties/SchemaName"
