@@ -1,4 +1,4 @@
-## aws-cloudformation-resource-providers-idres
+## aws-cloudformation-resource-providers-entity-resolution
 
 The CloudFormation Resource Provider Package For AWS Entity Resolution
 
