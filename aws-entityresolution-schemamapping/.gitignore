@@ -17,6 +17,8 @@ out/
 target/
 .idea/
 .settings/
+build/
+/build/
 
 # our logs
 rpdk.log*
